@@ -1,5 +1,6 @@
 window.GameConfig =
-  slideFormTemplateUrl: 'assets/template/slide-form.html'
+  leastImageLength: 4
+  imageFormTemplateUrl: 'assets/template/game-image-form.html'
   slideTimeoutList: [
     {
       value: 500
@@ -70,25 +71,25 @@ window.GameConfig =
       label: "Cartoons"
     }
   ]
-  gameTimeList: [
+  totalTimeList: [
     {
-      value: 2
+      value: 2000
       label: "Two minutes"
     }
     {
-      value: 3
+      value: 3000
       label: "Three minutes"
     }
     {
-      value: 5
+      value: 5000
       label: "Five minutes"
     }
     {
-      value: 6
+      value: 6000
       label: "Six minutes"
     }
     {
-      value: 8
+      value: 8000
       label: "Eight minutes"
     }
   ]
@@ -97,7 +98,7 @@ window.GameConfig =
   # parsley config bootstrap
   ParsleyConfig:
     errorClass: 'has-error'
-    successClass: 'has-success'
+    successClass: ''
     classHandler: (field) -> field.$element.parents('.form-group')
     errorsContainer: (field) -> field.$element.parents('.form-group')
     errorsWrapper: '<span class="help-block">'

@@ -5,7 +5,7 @@ showpage = (page) ->
   $("##{currentpage}-page").show()
 $(-> # on DOMContentLoaded
   # click hooks 
-  $('#navbar').bind('click', 'a[data-name]', ->
+  $('#navbar').on('click', 'a[data-name]', ->
     $el = $(@)
     showpage($el.data('name'))
     $('#navbar li.active').toggleClass('active', false)

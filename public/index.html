@@ -82,22 +82,36 @@
             </div>
             <div class="col-sm-4">
               <div class="form-group">
-                <label for="slide-count-inp">Number of slides</label>
+                <label for="total-time-inp">Total Time</label>
+                <select id="total-time-inp" class="form-control"
+                        name="total_time" required></select>
+                <!--
                 <input id="slide-count-inp" class="form-control"
                        type="integer" min="1" max="200"
                        name="slide_count" required />
-                <!-- helper to check game time -->
+                !-- helper to check game time --
                 <p class="help-block total-time-help"></p>
+                -->
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group select-images">
+                <label for="images_select">Select images</label>
+                <input type="file" id="images_select" name="images_select" multiple>
+                <button type="button" class="btn btn-default clear-images">Clear</button>
+                <p class="help-block">Images to show on slides.</p>
               </div>
             </div>
           </div>
-          <div data-slides-form>
+          <div data-images-form class="row">
           </div>
+          <div class="alert alert-danger error-msg" style="display:none"></div>
           <button type="submit" class="btn btn-success">Submit</button>
         </form>
         <!-- Page end -->
       </div>
       <div style="display:none" id="game-page">
+        
       </div>
       <div style="display:none" id="result-page">
       </div>
