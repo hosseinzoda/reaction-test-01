@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Development Test Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- js components start -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="bower_components/jasny-bootstrap/dist/css/jasny-bootstrap.min.css" />
+    <script src="bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js"></script>
+    <script src="bower_components/parsleyjs/dist/parsley.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <!-- js components end -->
+    <!-- game style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <!-- game scripts -->
+    <script src="assets/js/default-game-config.js"></script>
+    <script src="assets/js/gamesetup.js"></script>
+    <script src="assets/js/devtest.js"></script>
+  </head>
+  <body>    
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Development test page</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href data-name="setup">Setup</a></li>
+            <li><a href data-name="game">Game</a></li>
+            <li><a href data-name="results">Results</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="container pages-container">
+      <div id="loading-page">
+        <h3 class="text-center">Loading...</h3>
+      </div>
+      <div style="display:none" id="setup-page">
+        <h2>Setup a game</h2>
+        <!-- Page start -->
+        <form id="setup-form">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="slide-image-count-inp">Number of images</label>
+                <select id="slide-image-count-inp" class="form-control"
+                        name="slide_image_count" required></select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="type-inp">Type</label>
+                <select id="type-inp" class="form-control"
+                        name="type" required></select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="have-match-proportion-inp">Slide with match proportion</label>
+                <select id="have-match-proportion-inp" class="form-control"
+                        name="have_match_proportion" required></select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="slide-timeout-inp">Time per slide</label>
+                <select id="slide-timeout-inp" class="form-control"
+                        name="slide_timeout" required></select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="slide-count-inp">Number of slides</label>
+                <input id="slide-count-inp" class="form-control"
+                       type="integer" min="1" max="200"
+                       name="slide_count" required />
+                <!-- helper to check game time -->
+                <p class="help-block total-time-help"></p>
+              </div>
+            </div>
+          </div>
+          <div data-slides-form>
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <!-- Page end -->
+      </div>
+      <div style="display:none" id="game-page">
+      </div>
+      <div style="display:none" id="result-page">
+      </div>
+    </div>
+  </body>
+</html>

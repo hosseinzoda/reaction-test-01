@@ -1,0 +1,23 @@
+{
+  "name": "reaction-test-01",
+  "description": "Reaction test for human to find difference in set of images",
+  "main": "",
+  "authors": [
+    "Hossein Amin <hossein@aminbros.com>"
+  ],
+  "license": "GPL-2.0",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
+    "underscore": "^1.8.3",
+    "jasny-bootstrap": "^3.1.3",
+    "parsleyjs": "^2.6.2"
+  }
+}
