@@ -52,9 +52,9 @@ class GameSetup
           # complete
           return
         if imgtypepttrn.test(file.type)
-          self.addImage(file).then(->
-            storeAnImage()
-          ) # never throws to catch
+          self.addImage(file)
+            .then -> storeAnImage()
+            .catch -> storeAnImage()
         else
           storeAnImage()
       storeAnImage()
@@ -68,8 +68,8 @@ class GameSetup
       $imagectr = $($evt.target).parents('.game-image-ctr')
       if $imagectr and self.$imagesdiv[0] == $imagectr.parent()[0]
         imagectr = $imagectr[0]
-        index = _.find(self.$imagesdiv.children(), (c) -> c == imagectr)
-        if `index !== undefined`
+        index = _.findIndex(self.$imagesdiv.children(), (c) -> c == imagectr)
+        if index != -1
           self.storedimages.splice(index, 1)
           $imagectr.remove()
     )
@@ -77,14 +77,19 @@ class GameSetup
     self = @
     promises = []
     # load image template
-    if not GameConfig.imageFormTemplate then \
-      promises.push $.ajax(GameConfig.imageFormTemplateUrl).then (tpl) ->
-        if typeof tpl != 'string'
-          throw new Error("String response expected got #{typeof tpl}")
-        GameConfig.imageFormTemplate = tpl # define template
-        GameConfig._imageFormTemplate = null
+    if not GameConfig.imageFormTemplate
+      if not GameConfig._promise_imageFormTemplate?
+        GameConfig._promise_imageFormTemplate = \
+          $.ajax(GameConfig.imageFormTemplateUrl).then (tpl) ->
+            delete GameConfig._promise_imageFormTemplate
+            if typeof tpl != 'string'
+              throw new Error("String response expected got #{typeof tpl}")
+            GameConfig.imageFormTemplate = _.template(tpl) # define template
+      promises.push GameConfig._promise_imageFormTemplate
+    else if typeof GameConfig.imageFormTemplate == 'string'
+      GameConfig.imageFormTemplate = _.template(GameConfig.imageFormTemplate)
     # promise on ready
-    $.when(promises).then ->
+    $.when.apply($, promises).then ->
       self._initiate()
 
   _initiate: ->
@@ -104,6 +109,9 @@ class GameSetup
 
   _file2url: (file) ->
     deferred = $.Deferred()
+    if URL && URL.createObjectURL
+      deferred.resolve(URL.createObjectURL(file))
+      return deferred.promise()
     reader = new FileReader()
     reader.addEventListener('load', ->
       deferred.resolve(reader.result)
@@ -111,24 +119,33 @@ class GameSetup
     reader.readAsDataURL(file)
     deferred.promise()
 
+  _loadImage: (url) ->
+    deferred = $.Deferred()
+    img = new Image()
+    img.src = url
+    img.onload = ->
+      deferred.resolve()
+    img.onerror = ->
+      deferred.reject("Could not load image: " + url)
+    deferred.promise()
+
   addImage: (file) ->
     self = @
-    @_file2url(file).then( (imageUrl) ->
-      GameConfig._imageFormTemplate ?= _.template(GameConfig.imageFormTemplate)
-      imagedata =
-        imageUrl: imageUrl
-        file: file
-      self.storedimages.push(imagedata)
-      self.$imagesdiv.append(GameConfig._imageFormTemplate({
-        imageUrl: imageUrl
-      }))
-    )
+    @_file2url(file).then (image_url) ->
+      self._loadImage(image_url).then ->
+        imagedata =
+          image_url: image_url
+          file: file
+        self.storedimages.push(imagedata)
+        self.$imagesdiv.append(GameConfig.imageFormTemplate({
+          image_url: image_url
+        }))
 
   _formData: ->
     promises = []
     ret = {}
     self = @
-    erridx = _.find([
+    erridx = _.findIndex([
       {n: 'total_time', c:parseInt}, {n: 'slide_image_count', c:parseInt}
       {n: 'slide_timeout', c:parseInt}, {n: 'type'}
       {n:'have_match_proportion', c:parseFloat}
@@ -142,7 +159,7 @@ class GameSetup
       ret[item.n] = val
       return false
     )
-    if `erridx !== undefined`
+    if erridx != -1
       deferred = $.Deferred()
       deferred.reject("Form input is not valid")
       return deferred.promise()
@@ -159,13 +176,13 @@ class GameSetup
         if inp and inp.files.length == 1 and inp.files[0] != imagedata.file
           # update image data
           newfile = inp.files[0]
-          promises.push(self._file2url(newfile).then( (imageUrl) ->
-            imagedata.imageUrl = imageUrl
+          promises.push(self._file2url(newfile).then( (image_url) ->
+            imagedata.image_url = image_url
             imagedata.file = newfile
           ))
       
     )
-    $.when(promises).then(-> ret)
+    $.when.apply($, promises).then(-> ret)
     
     
 window.GameSetup = GameSetup

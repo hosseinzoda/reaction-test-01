@@ -1,0 +1,16 @@
+<% if(!empty) { %>
+<h3># <%= slide.index %></h3>
+<% } else { %>
+<h3>#</h3>
+<% } %>
+<div class="row images">
+  <% _.each(slide.images, function(image, index) { %>
+  <div class="image-col col-xs-<%= bscol %>">
+    <div class="image-ctr">
+      <% if(!empty) { %>
+      <img src="<%= image.image_url %>" />
+      <% } %>
+    </div>
+  </div>
+  <% }) %>
+</div>

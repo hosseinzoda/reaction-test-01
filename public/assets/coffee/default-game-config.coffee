@@ -1,6 +1,13 @@
 window.GameConfig =
+  countdownTime: 3 * 1000
+  countdownFreezeRatio: 0.6
   leastImageLength: 4
+  hitKeyCode: 32 # space
+  heightInfo: { min: 320, max: 1080 }
   imageFormTemplateUrl: 'assets/template/game-image-form.html'
+  gameTemplateUrl: 'assets/template/game.html'
+  gameSlideTemplateUrl: 'assets/template/game-slide.html'
+  resultTemplateUrl: 'assets/template/result.html'
   slideTimeoutList: [
     {
       value: 500
@@ -73,23 +80,23 @@ window.GameConfig =
   ]
   totalTimeList: [
     {
-      value: 2000
+      value: 2 * 60 * 1000
       label: "Two minutes"
     }
     {
-      value: 3000
+      value: 3 * 60 * 1000
       label: "Three minutes"
     }
     {
-      value: 5000
+      value: 5 * 60 * 1000
       label: "Five minutes"
     }
     {
-      value: 6000
+      value: 6 * 60 * 1000
       label: "Six minutes"
     }
     {
-      value: 8000
+      value: 8 * 60 * 1000
       label: "Eight minutes"
     }
   ]

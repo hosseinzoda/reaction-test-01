@@ -1,0 +1,24 @@
+<h2>Result</h2>
+<dl class="dl-horizontal">
+  <dt>Score</dt>
+  <dd><%= score %></dd>
+  <dt>Wrong hits</dt>
+  <dd><%= wronghits %></dd>
+</dl>
+<h3>Hits table</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Time of hit (ms)</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <% _.each(slides, function(slide, index) { %>
+  <tr>
+    <td><%= index + 1 %></td>
+    <td><%= slide.timeofhit != null ? slide.timeofhit : 'No hit' %></td>
+    <td><%= slide.correct ? 'Correct' : 'Wrong' %></td>
+  </tr>
+  <% }) %>
+</table>
