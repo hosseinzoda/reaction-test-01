@@ -76,9 +76,7 @@ $(window).bind('x-change-page-game', ($evt) ->
       "assets/img/testimgs/ab.png"
       "assets/img/testimgs/cookie.svg"
       "assets/img/testimgs/iphone6.png"
-    ], (url) ->
-      { image_url: url }
-    )
+    ], (url) -> { image_url: url })
   initGame(data)
 )
 

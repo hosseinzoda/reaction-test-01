@@ -60,22 +60,82 @@ window.GameConfig =
       columnsLength: 3
     }
   ]
-  typeList: [
+  imagesPresetList: [
     {
       value: "animals"
       label: "Animals"
+      images: [
+        "assets/img/testimgs/Game-Center-icon.png"
+        "assets/img/testimgs/1484654403_06-facebook.svg"
+        "assets/img/testimgs/angular.svg"
+        "assets/img/testimgs/iOS-9-icon-medium.png"
+        "assets/img/testimgs/os_macosx_64.png"
+        "assets/img/testimgs/1484654395_40-google-plus.svg"
+        "assets/img/testimgs/django-logo-negative.png"
+        "assets/img/testimgs/1484809285_avatar.svg"
+        "assets/img/testimgs/box2d.gif"
+        "assets/img/testimgs/ab.png"
+        "assets/img/testimgs/cookie.svg"
+        "assets/img/testimgs/iphone6.png"
+      ]
     }
     {
       value: "numbers"
       label: "Numbers"
+      images: [
+        "assets/img/testimgs/Game-Center-icon.png"
+        "assets/img/testimgs/1484654403_06-facebook.svg"
+        "assets/img/testimgs/angular.svg"
+        "assets/img/testimgs/iOS-9-icon-medium.png"
+        "assets/img/testimgs/os_macosx_64.png"
+        "assets/img/testimgs/1484654395_40-google-plus.svg"
+        "assets/img/testimgs/django-logo-negative.png"
+        "assets/img/testimgs/1484809285_avatar.svg"
+        "assets/img/testimgs/box2d.gif"
+        "assets/img/testimgs/ab.png"
+        "assets/img/testimgs/cookie.svg"
+        "assets/img/testimgs/iphone6.png"
+      ]
     }
     {
       value: "letters"
       label: "Letters"
+      images: [
+        "assets/img/testimgs/Game-Center-icon.png"
+        "assets/img/testimgs/1484654403_06-facebook.svg"
+        "assets/img/testimgs/angular.svg"
+        "assets/img/testimgs/iOS-9-icon-medium.png"
+        "assets/img/testimgs/os_macosx_64.png"
+        "assets/img/testimgs/1484654395_40-google-plus.svg"
+        "assets/img/testimgs/django-logo-negative.png"
+        "assets/img/testimgs/1484809285_avatar.svg"
+        "assets/img/testimgs/box2d.gif"
+        "assets/img/testimgs/ab.png"
+        "assets/img/testimgs/cookie.svg"
+        "assets/img/testimgs/iphone6.png"
+      ]
     }
     {
       value: "cartoons"
       label: "Cartoons"
+      images: [
+        "assets/img/testimgs/Game-Center-icon.png"
+        "assets/img/testimgs/1484654403_06-facebook.svg"
+        "assets/img/testimgs/angular.svg"
+        "assets/img/testimgs/iOS-9-icon-medium.png"
+        "assets/img/testimgs/os_macosx_64.png"
+        "assets/img/testimgs/1484654395_40-google-plus.svg"
+        "assets/img/testimgs/django-logo-negative.png"
+        "assets/img/testimgs/1484809285_avatar.svg"
+        "assets/img/testimgs/box2d.gif"
+        "assets/img/testimgs/ab.png"
+        "assets/img/testimgs/cookie.svg"
+        "assets/img/testimgs/iphone6.png"
+      ]
+    }
+    {
+      value: "custom"
+      label: "Your custom images"
     }
   ]
   totalTimeList: [

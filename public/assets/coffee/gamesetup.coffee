@@ -4,6 +4,7 @@ $selectReset = ($sel, list) ->
   _.each(list, (item) ->
     $sel.append($mkOption(item.value, item.label))
   )
+  $sel
 
 window.Parsley
   .addValidator('fileType', {
@@ -38,7 +39,23 @@ class GameSetup
     if @$imagesdiv.length != 1
       throw new Error("GameSetup form needs one and only one data-images-form")
     @storedimages = []
+    @imagesPresetByValue = _.object(
+      _.pluck(GameConfig.imagesPresetList, 'value')
+              GameConfig.imagesPresetList
+    )
     imgtypepttrn = /^image\//
+    @$form.find('[name=images_preset]').bind('change', ->
+      $inp = $(@)
+      preset = self.imagesPresetByValue[$inp.val()]
+      haspreset = preset? and preset.images?
+      if haspreset
+        self.storedimages = _.map(preset.images, (url) -> { image_url: url })
+      else
+        self.storedimages = []
+      self.$imagesdiv.children().remove() # remove imagesdiv anyway
+      self.$imagesdiv[if haspreset then 'hide' else 'show']()
+      self.$form.find('.select-images')[if haspreset then 'hide' else 'show']()
+    )
     @$form.find('[name=images_select]').bind('change', ->
       $imagesinp = $(@)
       files = _.map(@files, (file) -> file) # to array
@@ -73,6 +90,7 @@ class GameSetup
           self.storedimages.splice(index, 1)
           $imagectr.remove()
     )
+  
   load: ->
     self = @
     promises = []
@@ -99,7 +117,9 @@ class GameSetup
   resetSelectOptions: ->
     $selectReset(@$form.find('[name=slide_image_count]').first(),
                  GameConfig.slideFormatList)
-    $selectReset(@$form.find('[name=type]').first(), GameConfig.typeList)
+    $selectReset(@$form.find('[name=images_preset]').first(),
+                 GameConfig.imagesPresetList)
+      .trigger('change') # perform images_preset check
     $selectReset(@$form.find('[name=have_match_proportion]').first(),
                  GameConfig.haveMatchProportionList)
     $selectReset(@$form.find('[name=slide_timeout]').first(),
@@ -147,7 +167,7 @@ class GameSetup
     self = @
     erridx = _.findIndex([
       {n: 'total_time', c:parseInt}, {n: 'slide_image_count', c:parseInt}
-      {n: 'slide_timeout', c:parseInt}, {n: 'type'}
+      {n: 'slide_timeout', c:parseInt},
       {n:'have_match_proportion', c:parseFloat}
     ], (item) ->
       $inp = self.$form.find("[name=#{item.n}]").first()
@@ -167,21 +187,26 @@ class GameSetup
       deferred = $.Deferred()
       deferred.reject("Need for at #{GameConfig.leastImageLength} least images to build the game")
       return deferred.promise()
-    ret.images = @storedimages 
+    ret.images = @storedimages
+    preset = self.imagesPresetByValue[@$form.find('[name=images_preset]').val()]
+    haspreset = preset? and preset.images?
     # update stored images if needed
-    $images_ctr = @$imagesdiv.children()
-    _.each(@storedimages, (imagedata, index) ->
-      if index < $images_ctr.length
-        inp = $($images_ctr[index]).find('input[type=file]')[0]
-        if inp and inp.files.length == 1 and inp.files[0] != imagedata.file
-          # update image data
-          newfile = inp.files[0]
-          promises.push(self._file2url(newfile).then( (image_url) ->
-            imagedata.image_url = image_url
-            imagedata.file = newfile
-          ))
-      
-    )
+    if not haspreset
+      $images_ctr = @$imagesdiv.children()
+      _.each(@storedimages, (imagedata, index) ->
+        if index < $images_ctr.length
+          inp = $($images_ctr[index]).find('input[type=file]')[0]
+          if inp and inp.files.length == 1 and inp.files[0] != imagedata.file
+            # update image data
+            newfile = inp.files[0]
+            promises.push(
+              @_file2url(file).then (image_url) ->
+                self._loadImage(image_url).then ->
+                  imagedata.image_url = image_url
+                  imagedata.file = newfile
+            )
+
+      )
     $.when.apply($, promises).then(-> ret)
     
     

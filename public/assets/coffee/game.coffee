@@ -4,11 +4,8 @@ class Game
     if not GameConfig then throw new Error("GameConfig is not defined!")
     @$el = $(element)
     @data = data
-    @type = _.find(GameConfig.typeList, (atype) -> atype.value == data.type)
     @slideFormat = _.find(GameConfig.slideFormatList,
                           (aformat) -> aformat.value == data.slide_image_count)
-    if not @type?
-      throw new Error("Unknown type: " + data.type)
     if not @slideFormat?
       throw new Error("Unknown slide_image_count: " + data.slide_image_count)
     if @data.slide_image_count < 2
@@ -78,7 +75,6 @@ class Game
     self = @
     data = @data
     tdata =
-      type: @type
       slideFormat: @slideFormat
     @$el.html(GameConfig.gameTemplate(tdata))
     # draw empty slide
