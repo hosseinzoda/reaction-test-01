@@ -8,6 +8,7 @@ const filter = require('gulp-filter');
 const merge = require('merge-stream');
 const concat_stream = require('concat-stream')
 const sourcemaps = require('gulp-sourcemaps')
+const sequence = require('run-sequence');
 // const rename = require('gulp-rename');
 
 //CONFIG PATHS
@@ -56,7 +57,8 @@ gulp.task('coffee-all', function () {
   return merge(all)
 });
 
-gulp.task('build',['lessc-style', 'coffee-all', 'copy'],function() {
+gulp.task('build',[],function(done) {
+  sequence('lessc-style', 'coffee-all', 'copy', done)
 });
 
 gulp.task('clean', function(){
