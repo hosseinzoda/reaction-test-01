@@ -99,7 +99,8 @@ class Game
         allimages.splice(Math.floor(Math.random() * allimages.length), 1)[0]
       )
       _.each(_.range(existing_len), ->
-        images.push images[Math.floor(Math.random() * images.length)]
+        sidx = Math.floor(Math.random() * images.length)
+        images.splice(sidx, 0, images[Math.floor(Math.random()*images.length)])
       )
       { index: index, images: images, match: match }
     )
