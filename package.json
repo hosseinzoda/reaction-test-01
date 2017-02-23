@@ -18,6 +18,7 @@
     "gulp-less": "^3.3.0",
     "gulp-sourcemaps": "^2.4.1",
     "lite-server": "^2.2.2",
-    "merge-stream": "^1.0.1"
+    "merge-stream": "^1.0.1",
+    "run-sequence": "^1.2.2"
   }
 }
