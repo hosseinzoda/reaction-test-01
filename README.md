@@ -1,3 +1,7 @@
+# Snap! - Reaction test game
+
+A simple game that uses images to ask a user to test their reactions. 
+
 # Install
 
 Requires `node v7.2 or above`
