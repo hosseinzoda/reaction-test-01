@@ -3,6 +3,8 @@
 A simple game that uses images to ask a user to test their reactions. 
 View the finished example here: http://code.willwa.de/reaction-test-01/
 
+With thanks to Arasaac
+
 # Install
 
 Requires `node v7.2 or above`
