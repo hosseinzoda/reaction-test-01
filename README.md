@@ -3,7 +3,10 @@
 A simple game that uses images to ask a user to test their reactions. 
 View the finished example here: http://code.willwa.de/reaction-test-01/
 
-With thanks to Arasaac
+Note - Press space bar When you see a match! 
+
+With thanks to [Arasaac](http://arasaac.org) for the symbols used in this game. 
+
 
 # Install
 
