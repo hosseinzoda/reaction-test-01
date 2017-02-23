@@ -1,7 +1,7 @@
 <% if(!empty) { %>
-<h3># <%= slide.index %></h3>
+<h3 class="slide-num"># <%= slide.index %></h3>
 <% } else { %>
-<h3>#</h3>
+<h3 class="slide-num">#</h3>
 <% } %>
 <div class="row images">
   <% _.each(slide.images, function(image, index) { %>

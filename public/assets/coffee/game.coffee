@@ -107,9 +107,11 @@ class Game
     @score = 0
     @wronghits = 0
     @_bindhitkey = ($evt) ->
-      if not self.gameover and self.gamestarted and \
-         $evt.which == GameConfig.hitKeyCode
-        self.hit()
+      if not self.gameover and self.gamestarted
+        if $evt.which == GameConfig.hitKeyCode
+          self.hit()
+        else if $evt.which == GameConfig.exitKeyCode
+          self.exit()
     $(window).bind('keydown', @_bindhitkey)
     @_bindresize = ->
       self._setCanvasSize()
@@ -189,6 +191,11 @@ class Game
     @wronghits += if @currentslide.match then 0 else 1
     @score += if @currentslide.match then 1 else 0
     @_nextSlide()
+
+  exit: ->
+    @currentslide = null
+    @destroy()
+    $(@).trigger('gameover')
   
   _startcountdown: ->
     # show ready, steady, go then start

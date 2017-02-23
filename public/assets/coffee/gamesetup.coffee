@@ -167,8 +167,8 @@ class GameSetup
     self = @
     erridx = _.findIndex([
       {n: 'total_time', c:parseInt}, {n: 'slide_image_count', c:parseInt}
-      {n: 'slide_timeout', c:parseInt},
-      {n:'have_match_proportion', c:parseFloat}
+      {n: 'slide_timeout', c:parseInt}
+      {n: 'have_match_proportion', c:parseFloat}
     ], (item) ->
       $inp = self.$form.find("[name=#{item.n}]").first()
       val = $inp.val()

@@ -33,7 +33,11 @@ $(-> # on DOMContentLoaded
   gamesetup = new GameSetup($('#setup-form'))
   $(gamesetup).bind('submit', ($evt, data) ->
     # initiate a game
-    initGame(data)
+    # extra field addon
+    console.log($('[name=fullscreen]').first().prop('checked'))
+    $('body').toggleClass('fullscreen', $('[name=fullscreen]').first().prop('checked'))
+    initGame(data).then ->
+      $('body').toggleClass('fullscreen', false)
   )
   promises.push gamesetup.load()
 
@@ -81,6 +85,7 @@ $(window).bind('x-change-page-game', ($evt) ->
 )
 
 window.initGame = (data) ->
+  deferred = $.Deferred()
   cleargame()
   $game = $('<div id="game"></div>').appendTo($('#game-page'))
   game = new Game(data, $('#game'))
@@ -94,10 +99,13 @@ window.initGame = (data) ->
         $('#result-page').html('')
         game.writeResult('#result-page')
         showpage('result')
+        deferred.resolve()
       )
     .catch (err) ->
       console.error(err)
       alert(err)
+      deferred.reject(err)
+  deferred.promise()
 
 $(window).bind('x-change-page-result', ($evt) ->
   data =

@@ -2,6 +2,7 @@ window.GameConfig =
   countdownTime: 3 * 1000
   countdownFreezeRatio: 0.6
   leastImageLength: 4
+  exitKeyCode: 27 # escape
   hitKeyCode: 32 # space
   heightInfo: { min: 320, max: 1080 }
   imageFormTemplateUrl: 'assets/template/game-image-form.html'
