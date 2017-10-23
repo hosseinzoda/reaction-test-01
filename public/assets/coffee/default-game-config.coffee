@@ -38,8 +38,45 @@ window.GameConfig =
       value: 3500
       label: "3.5s"
     }
+    {
+      value: 4000
+      label: "4s"
+    }
+   {
+      value: 4500
+      label: "4.5s"
+    }
+   {
+      value: 5000
+      label: "5s"
+    } 
+   {
+      value: 5500
+      label: "5.5s"
+    } 
+   {
+      value: 6000
+      label: "6s"
+    } 
+   {
+      value: 6500
+      label: "6.5s"
+    } 
+   {
+      value: 7000
+      label: "7s"
+    }
+   {
+      value: 7500
+      label: "7.5s"
+    } 
   ]
   slideFormatList: [
+    {
+      value: 2
+      label: "Two"
+      columnsLength: 2
+    }
     {
       value: 4
       label: "Four"
