@@ -90,6 +90,9 @@ $(window).bind('x-change-page-game', ($evt) ->
 window.initGame = (data) ->
   deferred = $.Deferred()
   cleargame()
+  playAgain = ->
+    $('#play-again-btn').off('click', playAgain)
+    window.initGame(data)
   $game = $('<div id="game"></div>').appendTo($('#game-page'))
   game = new Game(data, $('#game'))
   $game.data('game', game)
@@ -102,6 +105,7 @@ window.initGame = (data) ->
         $('#result-page').html('')
         game.writeResult('#result-page')
         showpage('result')
+        $('#play-again-btn').on('click', playAgain)
         deferred.resolve()
       )
     .catch (err) ->
