@@ -9,7 +9,7 @@
                  .filter(function(s) { return s != null }).value(),
          averagetime = /** sum / count **/
            _.reduce(hits, function(a, b) { return a + b; }) / hits.length; %>
-  <dd><%= averagetime.toFixed(2) %></dd>
+  <dd><%= hits.length == 0 ? 'No hit' : averagetime.toFixed(2) %></dd>
 </dl>
 <button type="button" class="btn btn-primary btn-lg" id="play-again-btn">Play again</button>
 <h3>Hits table</h3>
