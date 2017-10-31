@@ -19,8 +19,27 @@ class Game
   @writeResult: (data, elem) ->
     if not GameConfig.resultTemplate?
       throw new Error("result template is not loaded")
-    # score, wronghits,
+    # score, wronghits
     $(elem).append(GameConfig.resultTemplate(data))
+    $(elem).find('[data-csv-download-link]').each(->
+      @_filename = "game-result.csv"
+      @_blob = new Blob([Game.generateResultCSV(data)], {type: 'text/csv'});
+      @href = URL.createObjectURL(@_blob)
+      @download = @_filename
+      $(@).click(($evt) ->
+        if window.navigator.msSaveOrOpenBlob? # IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
+          $evt.preventDefault()
+          window.navigator.msSaveBlob(@_blob, @_filename)
+      )
+    )
+
+  @generateResultCSV: (data) ->
+    lines = _.map(data.slides, (slide, index) ->
+      "#{index + 1},"+
+      "#{if slide.timeofhit != null then slide.timeofhit else 'No hit'},"+
+      "#{if slide.correct then '1' else '0'}"
+    )
+    return lines.join("\r\n")
 
   writeResult: (elem) ->
     Game.writeResult(@, elem)
@@ -66,6 +85,23 @@ class Game
     _.each(@data.images, (img) ->
       promises.push self._loadImage(img.image_url)
     )
+    if @data.withaudio
+      @audio4correct = Game.initAudio(GameConfig.audioCorrect)
+      @audio4wrong = Game.initAudio(GameConfig.audioWrong)
+      _.each([@audio4correct,@audio4wrong], (audio) ->
+        deferred = $.Deferred()
+        onEnd = () ->
+          $(audio).off('canplaythrough', onEnd)
+            .off('error', onEnd)
+          if audio.error
+            audio.error.path = audio.src
+            deferred.reject(audio.error)
+          else
+            deferred.resolve()
+        $(audio).on('canplaythrough', onEnd)
+          .on('error', onEnd)
+        promises.push(deferred.promise())
+      )
     $.when.apply($, promises).then ->
       self._initiate()
 
@@ -87,7 +123,14 @@ class Game
       slideFormat: @slideFormat
     @$el.find('.slide').html(GameConfig.gameSlideTemplate(emptyslide))
     # game calcs
-    @slidesCount = Math.floor(data.total_time / data.slide_timeout)
+    if data.slide_timeout == 0
+      throw new Error("slide_timeout should not be zero")
+    if data.total_time < 0
+      if data.slides_count < 0
+        throw new Error("slides_count and total_time are both -1")
+      @slidesCount = data.slides_count
+    else
+      @slidesCount = Math.floor(data.total_time / data.slide_timeout)
     @slides = _.map(_.range(@slidesCount), (index) ->
       match = Math.random() < data.have_match_proportion
       existing_len = if match then 1 else 0
@@ -150,11 +193,20 @@ class Game
     row_len = Math.ceil(@data.slide_image_count / @slideFormat.columnsLength)
     image_height = Math.floor(images_height / row_len)
     $images.find('.image-col').css('height', image_height+'px')
-  
+
   _nextSlide: ->
+    @_nextSlideTO = setTimeout($.proxy(@_doNextSlide, @),
+         if @data.next_slide_pause > 0 then @data.next_slide_pause else 0)
+  
+  _doNextSlide: ->
     self = @
     # score calc
-    slide = @slidesqueue.shift()
+    if @data.slides_count > 0 and @data.total_time > 0 and \
+       @slides.length - @slidesqueue.length >= @data.slides_count
+      slide = null
+      @slides.splice(@data.slides_count, @slides.length - @data.slides_count)
+    else
+      slide = @slidesqueue.shift()
     if not slide?
       # game finished
       @currentslide = null
@@ -177,6 +229,12 @@ class Game
       # no hit
       self.score += if self.currentslide.match then 0 else 1
       self.currentslide.correct = not self.currentslide.match
+      if self.data.withaudio
+        Game.pauseAudio()
+        if not self.currentslide.match
+          Game.playAudio(self.audio4correct)
+        else
+          Game.playAudio(self.audio4wrong)
       self._nextSlide()
     , @data.slide_timeout)
 
@@ -192,6 +250,12 @@ class Game
     @wronghits += if @currentslide.match then 0 else 1
     @score += if @currentslide.match then 1 else 0
     @_nextSlide()
+    if @data.withaudio
+      Game.pauseAudio()
+      if @currentslide.match
+        Game.playAudio(@audio4correct)
+      else
+        Game.playAudio(@audio4wrong)
 
   exit: ->
     @currentslide = null
@@ -233,7 +297,37 @@ class Game
     @_setSlideSize()
     @_startcountdown().then ->
       self.gamestarted = true
-      self._nextSlide()
+      self._doNextSlide()
+
+  @initAudio: (src, volume, rate) ->
+    audio = document.createElement('audio')
+    audio.preload = "auto";
+    audio.src = src
+    if volume >= 0
+      audio.volume = volume
+    if rate > 0
+      audio.playbackRate = rate
+    document.body.appendChild(audio)
+    return audio
+    
+  @playAudio: (audio) ->
+    deferred = $.Deferred()
+    audio.pause()
+    audio.currentTime = 0
+    audio.play()
+    onResolve = ->
+      $(@).off('pause', onResolve)
+      $(@).off('ended', onResolve)
+      deferred.resolve()
+    $(audio)
+      .on('pause', onResolve)
+      .on('ended', onResolve)
+    return deferred.promise()
+
+  @pauseAudio: ->
+    _.each(document.body.getElementsByTagName('audio'), (audio) ->
+      audio.pause()
+    )
     
     
 window.Game = Game

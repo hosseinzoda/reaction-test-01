@@ -1,8 +1,8 @@
-$mkOption = (value, html) -> $('<option>').attr('value', value).html(html)
+$mkOption = (value, html, selected) -> $('<option>').attr('value', value).prop('selected', !!selected).html(html)
 $selectReset = ($sel, list) ->
   $sel.children().remove()
   _.each(list, (item) ->
-    $sel.append($mkOption(item.value, item.label))
+    $sel.append($mkOption(item.value, item.label, item['default']))
   )
   $sel
 
@@ -27,6 +27,9 @@ class GameSetup
       $evt.preventDefault()
       if not self.$form.parsley().isValid()
         return # validation is not ready
+      if parseInt($('[name=total_time]').val()) == -1 and \
+         parseInt($('[name=slides_count]').val()) == -1
+        return alert("Total Time and Number of slides cannot be unknown")
       # not defined yet
       self._formData()
       .then (data) ->
@@ -126,6 +129,10 @@ class GameSetup
                  GameConfig.slideTimeoutList)
     $selectReset(@$form.find('[name=total_time]').first(),
                  GameConfig.totalTimeList)
+    $selectReset(@$form.find('[name=next_slide_pause]').first(),
+                 GameConfig.nextSlidePause)
+    $selectReset(@$form.find('[name=slides_count]').first(),
+                 GameConfig.slidesCountList)
 
   _file2url: (file) ->
     deferred = $.Deferred()
@@ -165,17 +172,24 @@ class GameSetup
     promises = []
     ret = {}
     self = @
+    inputParseInt = (inp) -> parseInt(inp.value)
+    inputParseFloat = (inp) -> parseFloat(inp.value)
+    inputParseCheckbox = (inp) -> inp.checked
     erridx = _.findIndex([
-      {n: 'total_time', c:parseInt}, {n: 'slide_image_count', c:parseInt}
-      {n: 'slide_timeout', c:parseInt}
-      {n: 'have_match_proportion', c:parseFloat}
+      {n: 'total_time', c:inputParseInt},
+      {n: 'slide_image_count', c:inputParseInt}
+      {n: 'slide_timeout', c:inputParseInt}
+      {n: 'have_match_proportion', c:inputParseFloat}
+      {n: 'withaudio', c:inputParseCheckbox }
+      {n: 'next_slide_pause', c: inputParseInt }
+      {n: 'slides_count', c: inputParseInt }
     ], (item) ->
       $inp = self.$form.find("[name=#{item.n}]").first()
       val = $inp.val()
       if $inp.length == 0 or not $inp.parsley().isValid()
         return true
       if typeof item.c == 'function'
-        val = item.c(val)
+        val = item.c($inp[0])
       ret[item.n] = val
       return false
     )

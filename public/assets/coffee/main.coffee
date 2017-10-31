@@ -34,7 +34,6 @@ $(-> # on DOMContentLoaded
   $(gamesetup).bind('submit', ($evt, data) ->
     # initiate a game
     # extra field addon
-    console.log($('[name=fullscreen]').first().prop('checked'))
     $('body').toggleClass('fullscreen', $('[name=fullscreen]').first().prop('checked'))
     initGame(data).then ->
       $('body').toggleClass('fullscreen', false)
@@ -62,24 +61,28 @@ $(window).bind('x-change-page', ($evt) ->
 # initiate test game on page changed to game
 $(window).bind('x-change-page-game', ($evt) ->
   data =
+    type: "animals"
+    label: "Animals"
     total_time: 0.5 * 60 * 1000
-    slide_image_count: 4
     slide_timeout: 3 * 1000
-    type: 'cartoons'
     have_match_proportion: 0.3
+    slide_image_count: 4
     images: _.map([
-      "assets/img/testimgs/Game-Center-icon.png"
-      "assets/img/testimgs/1484654403_06-facebook.svg"
-      "assets/img/testimgs/angular.svg"
-      "assets/img/testimgs/iOS-9-icon-medium.png"
-      "assets/img/testimgs/os_macosx_64.png"
-      "assets/img/testimgs/1484654395_40-google-plus.svg"
-      "assets/img/testimgs/django-logo-negative.png"
-      "assets/img/testimgs/1484809285_avatar.svg"
-      "assets/img/testimgs/box2d.gif"
-      "assets/img/testimgs/ab.png"
-      "assets/img/testimgs/cookie.svg"
-      "assets/img/testimgs/iphone6.png"
+      "assets/img/arasaac-animals/dog.png"
+      "assets/img/arasaac-animals/cat.png"
+      "assets/img/arasaac-animals/goat.png"
+      "assets/img/arasaac-animals/pig.png"
+      "assets/img/arasaac-animals/fish.png"
+      "assets/img/arasaac-animals/horse.png"
+      "assets/img/arasaac-animals/dolphin.png"
+      "assets/img/arasaac-animals/tortoise.png"
+      "assets/img/arasaac-animals/lion.png"
+      "assets/img/arasaac-animals/giraffe.png"
+      "assets/img/arasaac-animals/sheep.png"
+      "assets/img/arasaac-animals/donkey.png"
+      "assets/img/arasaac-animals/monkey.png"
+      "assets/img/arasaac-animals/zebra.png"
+      "assets/img/arasaac-animals/tiger.png"
     ], (url) -> { image_url: url })
   initGame(data)
 )
@@ -103,7 +106,10 @@ window.initGame = (data) ->
       )
     .catch (err) ->
       console.error(err)
-      alert(err)
+      errmsg = if err.message then err.message else err+''
+      if err.constructor == window.MediaError
+        errmsg = "Could not load media \"#{err.path}\""
+      alert(errmsg)
       deferred.reject(err)
   deferred.promise()
 

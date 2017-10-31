@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Reaction test for human to find difference in set of images",
   "scripts": {
-    "dev": "gulp lessc-style && gulp coffee-all && lite-server -c ./lite-server-config.js",
+    "dev": "gulp lessc-style && gulp coffee-all && concurrently \"lite-server -c ./lite-server-config.js\" \"gulp watch\"",
     "build": "gulp build",
     "gulp": "gulp"
   },
@@ -20,5 +20,9 @@
     "lite-server": "^2.2.2",
     "merge-stream": "^1.0.1",
     "run-sequence": "^1.2.2"
+  },
+  "dependencies": {
+    "concurrently": "^3.5.0",
+    "gulp-util": "^3.0.8"
   }
 }

@@ -9,6 +9,8 @@ window.GameConfig =
   gameTemplateUrl: 'assets/template/game.html'
   gameSlideTemplateUrl: 'assets/template/game-slide.html'
   resultTemplateUrl: 'assets/template/result.html'
+  audioCorrect: 'assets/audio/correct.wav'
+  audioWrong: 'assets/audio/wrong.wav'
   slideTimeoutList: [
     {
       value: 500
@@ -25,6 +27,7 @@ window.GameConfig =
     {
       value: 2000
       label: "2s"
+      default: true
     }
     {
       value: 2500
@@ -69,6 +72,28 @@ window.GameConfig =
    {
       value: 7500
       label: "7.5s"
+    } 
+  ]
+  nextSlidePause: [
+    {
+      value: 0
+      label: "None"
+    }
+    {
+      value: 500
+      label: "0.5s"
+    }
+    {
+      value: 1000
+      label: "1.0s"
+    }
+    {
+      value: 1500
+      label: "1.5s"
+    }
+    {
+      value: 2000
+      label: "2s"
     } 
   ]
   slideFormatList: [
@@ -181,6 +206,29 @@ window.GameConfig =
     {
       value: 8 * 60 * 1000
       label: "Eight minutes"
+    }
+    {
+      value: -1
+      label: "Don't care"
+    }
+  ]
+  slidesCountList: [
+    {
+      default: true
+      value: "-1"
+      label: "Disabled"
+    }
+    {
+      value: "10"
+      label: "10"
+    }
+    {
+      value: "20"
+      label: "20"
+    }
+    {
+      value: "30"
+      label: "30"
     }
   ]
   haveMatchProportionList: ({value: v/100.0,label: v+'%'} \

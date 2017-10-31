@@ -5,9 +5,14 @@
   <dt>Wrong hits</dt>
   <dd><%= wronghits %></dd>
   <dt>Average reaction time</dt>
-  <dd><%= averagetime %></dd>
+  <% var hits = _.chain(slides).map(function(s) { return s.timeofhit })
+                 .filter(function(s) { return s != null }).value(),
+         averagetime = /** sum / count **/
+           _.reduce(hits, function(a, b) { return a + b; }) / hits.length; %>
+  <dd><%= averagetime.toFixed(2) %></dd>
 </dl>
 <h3>Hits table</h3>
+<a href data-csv-download-link>Download result in csv</a>
 <table class="table">
   <thead>
     <tr>

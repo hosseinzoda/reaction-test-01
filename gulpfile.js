@@ -9,52 +9,61 @@ const merge = require('merge-stream');
 const concat_stream = require('concat-stream')
 const sourcemaps = require('gulp-sourcemaps')
 const sequence = require('run-sequence');
+const path = require('path')
 // const rename = require('gulp-rename');
+const gutil = require('gulp-util')
 
 //CONFIG PATHS
 const assets_dir = 'public/assets',
-    build_dir = './dist',
-    coffee_defs = [
-      {
-        'src': assets_dir+'/coffee/**/*.coffee',
-        'options': {},
-        'dest': assets_dir+'/js/'
-      }
-    ];
+      build_dir = './dist';
+let iswatch = false;
 
 //TASKS
 gulp.task('lessc-style', function () {
+  var stream = less({
+    paths: [assets_dir+'/less/']
+  });
+  if(iswatch)
+    stream.on('error', function(err) {
+      gutil.log(err.toString());
+      gutil.beep()
+      this.end()
+    })
   return gulp.src(assets_dir+'/less/style.less') 
-    .pipe(less({
-      paths: [assets_dir+'/less/']
-    }))
+    .pipe(stream)
     .pipe(gulp.dest(assets_dir+'/css/'));
 });
 
-gulp.task('coffee-path-stdin', function() {
-  process.stdin.pipe(concat_stream(function(data) {
-    var path = data.toString('utf-8')
-    console.log('path', path)
-    // coffee all code
-    for(let acoffee of coffee_defs)
-      gulp.src(acoffee.src)
-      .pipe(filter([path]))
-      .pipe(sourcemaps.init())
-      .pipe(coffee(acoffee.options))
-      .pipe(sourcemaps.write('./maps'))
-      .pipe(gulp.dest(acoffee.dest));
-  }));
+function coffee_make(src, dest) {
+  var stream = coffee({});
+  if(iswatch)
+    stream.on('error', function(err) {
+      gutil.log(err.toString());
+      gutil.beep()
+      this.end()
+    })
+  return gulp.src(src)
+    .pipe(sourcemaps.init())
+    .pipe(stream)
+    .pipe(sourcemaps.write('./maps'))
+    .pipe(gulp.dest(dest));
+}
+
+gulp.task('coffee-all', () => {
+  return coffee_make(assets_dir+'/coffee/**/*.coffee', assets_dir+'/js/')
 });
 
-gulp.task('coffee-all', function () {
-  var all = [];
-  for(let acoffee of coffee_defs)
-    all.push(gulp.src(acoffee.src)
-             .pipe(sourcemaps.init())
-             .pipe(coffee(acoffee.options))
-             .pipe(sourcemaps.write('./maps'))
-             .pipe(gulp.dest(acoffee.dest)));
-  return merge(all)
+gulp.task('watch', function() {
+  iswatch = true
+  gulp.watch(assets_dir+'/coffee/**/*.coffee')
+    .on('change', (event) => {
+      var dir = path.resolve(process.cwd(), assets_dir ),
+          relpath = path.relative(dir + '/coffee/', event.path);
+      console.log("coffee compile", relpath)
+      coffee_make(event.path,
+                  path.join(dir + '/js/', path.dirname(relpath)) + "/")
+    });
+  gulp.watch(assets_dir+'/less/**/*.less', ['lessc-style']);
 });
 
 gulp.task('build',[],function(done) {
